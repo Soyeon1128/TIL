@@ -1,0 +1,17 @@
+@mixin border-radius($value){
+    border-radius: ($value);
+}
+// @mixin clear(){
+//     ::after{
+//         content: "";
+//         display: block;
+//         clear: both;
+//     }
+// }
+@mixin clearfix{
+    &::after{
+        content: "";
+        display: block;
+        clear: both;
+    }
+}

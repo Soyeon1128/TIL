@@ -1,32 +1,10 @@
-@import 'partials/color';
-@import 'partials/layout';
+@import 'partials/fonts';
+@import 'partials/normalize';
+@import 'partials/reset';
 @import 'partials/mixin';
-
-body{
-    color: $color-2;
-    background: $color-4;
-}
-div{
-    @include border-radius(50px);
-}
-%my-class{
-    border: 1px solid #aaa;
-    border-radius: 10px;
-    padding: 10px;
-    background: #eee;
-}
-.event{
-    margin: 10px;
-    @extend %my-class;
-}
-.favorite{
-    box-shadow: 1px 1px 0 0 #000;
-    @extend %my-class;
-    @include clearfix;
-}
-$width: 100;
-$height: 300px;
-.search{
-    width: $width * 1px;
-    height: $height / 1px;
-}
+@import 'partials/grid';
+@import 'partials/base';
+@import 'partials/header';
+@import 'partials/navigation';
+@import 'partials/main';
+@import 'partials/footer';

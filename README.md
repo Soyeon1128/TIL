@@ -6,3 +6,5 @@
 > - [0529](./TIL_MarkDown/TIL_0529.md) | JavaScript 입문, 변수, 데이터 유형
 > - [0530](./TIL_MarkDown/TIL_0530.md) | JavaScript 데이터 형 변환, 검증
 > - [0531](./TIL_MarkDown/TIL_0531.md) | 연산자, 데이터 유형 검증, 생성자와 객체, 프로토타입, 유틸리티 함수
+> - [0602](./TIL_MarkDown/TIL_0602.md) | 흐름 제어와 오류 처리, 반복문
+> - [0605](./TIL_MarkDown/TIL_0605.md) | 함수, Argument와 Parameter, 재귀함수, 함수 프로토타입 객체

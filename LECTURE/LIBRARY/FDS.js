@@ -1,11 +1,11 @@
 /*! FDS.js @ 2017, yamoo9.net */
 
-// 전역과 구분되는 독립된 공간을 형성
-// 모듈을 구현해서 내부에 접근 가능한 객체를 만들자.
 var FDS = function(global){
 
-  // 클로저 영역
-  // 정의한 함수들
+  // ——————————————————————————————————————
+  // JavaScript 유틸리티 함수
+  // ——————————————————————————————————————
+
   function type(data) {
     return Object.prototype.toString.call(data).slice(8,-1).toLowerCase();
   }
@@ -64,8 +64,127 @@ var FDS = function(global){
     return Array.prototype.slice.call(o);
   }
 
-  // 클로저를 기억하는 객체를 반환
-  // 전역에서 접근 가능한 네임스페이스 객체 FDS
+  // ——————————————————————————————————————
+  // DOM 검증 유틸리티 함수
+  // ——————————————————————————————————————
+  function isElNode(node) {
+    return node.nodeType === 1;
+  }
+  function validateElNode(el_node) {
+    if ( !el_node || !isElNode(el_node) ) {
+      throw '요소노드를 반드시 전달해야 합니다';
+    }
+  }
+
+  // ——————————————————————————————————————
+  // DOM 선택 API: 유틸리티 함수
+  // ——————————————————————————————————————
+  function id(name) {
+    validateError(name, '!string', '전달인자는 문자여야 합니다.');
+    return document.getElementById(name);
+  }
+  function tagAll(name, context) {
+    validateError(name, '!string', '전달인자는 문자여야 합니다.');
+    if ( context && !isElNode(context) ) {
+      throw '두번째 전달인자는 요소노드여야 합니다.';
+    }
+    return (context||document).getElementsByTagName(name);
+  }
+  function tag(name, context) {
+    return tagAll(name, context)[0];
+  }
+  // ——————————————————————————————————————
+  // DOM 탐색 API: 유틸리티 함수
+  // ——————————————————————————————————————
+
+  // function firstChild(el_node) {
+    //   // 전달인자 검증
+    //   if ( !el_node || el_node.nodeType !== 1 ) {
+    //     throw '요소노드를 반드시 전달해야 합니다';
+    //   }
+    //   // IE 9+
+    //   // return el_node.firstElementChild;
+    //   // IE 8- 지원하는 크로스 브라우징 유틸리티 함수를 만든다면?
+    //   // if ( 'firstElementChild' in Element.prototype ) {
+    //   if ( el_node.firstElementChild ) {
+    //     return el_node.firstElementChild;
+    //   } else {
+    //     return children[ --children.length ];
+    //   }
+  // }
+
+  var firstChild = function(){
+    var _firstChild = null;
+    // 조건을 1번만 확인
+    if ( 'firstElementChild' in Element.prototype ) {
+      _firstChild = function(el_node) {
+        validateElNode(el_node);
+        return el_node.firstElementChild;
+      };
+    } else {
+      _firstChild = function(el_node) {
+        validateElNode(el_node);
+        return el_node.children[0];
+      };
+    }
+    return _firstChild;
+  }();
+  var lastChild = function(){
+    var _lastChild = null;
+    if ( 'lastElementChild' in Element.prototype ) {
+      _lastChild = function(el_node) {
+        validateElNode(el_node);
+        return el_node.lastElementChild;
+      };
+    } else {
+      _lastChild = function(el_node) {
+        validateElNode(el_node);
+        var children = el_node.children;
+        return children[ --children.length ];
+      };
+    }
+    return _lastChild;
+  }();
+  var nextSibling = function($$) {
+    var _nextSibling;
+    if ( 'nextElementSibling' in $$ ) {
+      _nextSibling = function(el_node) {
+        validateElNode(el_node);
+        return el_node.nextElementSibling;
+      };
+    } else {
+      _nextSibling = function(el_node) {
+        validateElNode(el_node);
+        do {
+          el_node = el_node.nextSibling;
+        } while(el_node && !isElNode(el_node));
+      };
+      return el_node;
+    }
+    return _nextSibling;
+  }(Element.prototype);
+
+  var previousSibling = function() {
+    var _previousSibling;
+    if ( 'previousElementSibling' in Element.prototype ) {
+      _previousSibling = function(el_node) {
+        validateElNode(el_node);
+        return el_node.previousElementSibling;
+      };
+    } else {
+      _previousSibling = function(el_node) {
+        validateElNode(el_node);
+        do {
+          el_node = el_node.previousSibling;
+        } while(el_node && !isElNode(el_node));
+        return el_node;
+      };
+    }
+    return _previousSibling;
+  }();
+
+  // ---------------------------------------
+  // 반환: FDS 네임스페이스 객체
   return {
     info: {
       version: '0.0.1',
@@ -74,12 +193,22 @@ var FDS = function(global){
       license: 'MIT'
     },
     // 공개 API
+    // JavaScript 유틸리티
     isNumber:      isNumber,
     isFunction:    isFunction,
     isArray:       isArray,
     isObject:      isObject,
     makeArray:     makeArray,
-    validateError: validateError
+    validateError: validateError,
+    // DOM 선택 API: 유틸리티
+    id: id,
+    tagAll: tagAll,
+    tag: tag,
+    // DOM 탐색 API: 유틸리티
+    first: firstChild,
+    last: lastChild,
+    prev: previousSibling,
+    next: nextSibling
   };
 
-}(window); // IIFE 패턴 사용
+}(window);

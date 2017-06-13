@@ -2,10 +2,11 @@
 
 var FDS = function(global){
 
+  var document = global.document;
+
   // ——————————————————————————————————————
   // JavaScript 유틸리티 함수
   // ——————————————————————————————————————
-
   function type(data) {
     return Object.prototype.toString.call(data).slice(8,-1).toLowerCase();
   }
@@ -67,13 +68,17 @@ var FDS = function(global){
   // ——————————————————————————————————————
   // DOM 검증 유틸리티 함수
   // ——————————————————————————————————————
-  function isElNode(node) {
-    return node.nodeType === 1;
+  function isElementNode(node) {
+    return node.nodeType === document.ELEMENT_NODE;
   }
-  function validateElNode(el_node) {
-    if ( !el_node || !isElNode(el_node) ) {
-      throw '요소노드를 반드시 전달해야 합니다';
-    }
+  function isTextNode(node) {
+    return node.nodeType === document.TEXT_NODE;
+  }
+  function validateElementNode(node) {
+    if ( !node || !isElementNode(node) ) { throw '요소노드를 반드시 전달해야 합니다'; }
+  }
+  function validateElementNodeOrDocument(node) {
+    if ( node !== document && !isElementNode(node) ) { throw '두번째 인자로 요소노드를 전달해 주세요'; }
   }
 
   // ——————————————————————————————————————
@@ -85,7 +90,7 @@ var FDS = function(global){
   }
   function tagAll(name, context) {
     validateError(name, '!string', '전달인자는 문자여야 합니다.');
-    if ( context && !isElNode(context) ) {
+    if ( context && !isElementNode(context) && context !== document ) {
       throw '두번째 전달인자는 요소노드여야 합니다.';
     }
     return (context||document).getElementsByTagName(name);
@@ -93,37 +98,59 @@ var FDS = function(global){
   function tag(name, context) {
     return tagAll(name, context)[0];
   }
+  var classAll = function(){
+    var _classAll = null;
+    if ( 'getElementsByClassNames' in Element.prototype ) {
+      _classAll = function(name, context) {
+        validateError(name, '!string', '첫번째 전달인자는 문자열을 전달해야 합니다.');
+        context = context || document;
+        validateElementNodeOrDocument(context);
+        return context.getElementsByClassName(name);
+      };
+    } else {
+      _classAll = function(name, context) {
+        validateError(name, '!string', '첫번째 전달인자는 문자열이어야 합니다.');
+        context = context || document;
+        validateElementNodeOrDocument(context);
+        var _alls = tagAll('*', context);
+        var _matched = [];
+        var match = new RegExp('(^|\\s)' + name + '($|\\s)');
+        for ( var i=0, l=_alls.length; i<l; ++i ) {
+          var _el = _alls.item(i);
+          if ( match.test(_el.className) ) { _matched.push(_el); }
+        }
+        return _matched;
+      };
+    }
+    return _classAll;
+  }();
+  var classSingle = function(name, context) {
+    return classAll(name, context)[0];
+  };
+  var queryAll = function(selector, context){
+    validateError(selector, '!string', '첫번째 인자는 CSS 선택자 문자열이어야 합니다.');
+    context = context || document;
+    validateElementNodeOrDocument(context);
+    return context.querySelectorAll(selector);
+  };
+  var query = function(selector, context){
+    return queryAll(selector, context)[0];
+  };
+
   // ——————————————————————————————————————
   // DOM 탐색 API: 유틸리티 함수
   // ——————————————————————————————————————
-
-  // function firstChild(el_node) {
-    //   // 전달인자 검증
-    //   if ( !el_node || el_node.nodeType !== 1 ) {
-    //     throw '요소노드를 반드시 전달해야 합니다';
-    //   }
-    //   // IE 9+
-    //   // return el_node.firstElementChild;
-    //   // IE 8- 지원하는 크로스 브라우징 유틸리티 함수를 만든다면?
-    //   // if ( 'firstElementChild' in Element.prototype ) {
-    //   if ( el_node.firstElementChild ) {
-    //     return el_node.firstElementChild;
-    //   } else {
-    //     return children[ --children.length ];
-    //   }
-  // }
-
   var firstChild = function(){
     var _firstChild = null;
     // 조건을 1번만 확인
     if ( 'firstElementChild' in Element.prototype ) {
       _firstChild = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         return el_node.firstElementChild;
       };
     } else {
       _firstChild = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         return el_node.children[0];
       };
     }
@@ -133,82 +160,106 @@ var FDS = function(global){
     var _lastChild = null;
     if ( 'lastElementChild' in Element.prototype ) {
       _lastChild = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         return el_node.lastElementChild;
       };
     } else {
       _lastChild = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         var children = el_node.children;
         return children[ --children.length ];
       };
     }
     return _lastChild;
   }();
-  var nextSibling = function($$) {
+  var nextSibling = function() {
     var _nextSibling;
-    if ( 'nextElementSibling' in $$ ) {
+    if ( 'nextElementSibling' in Element.prototype ) {
       _nextSibling = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         return el_node.nextElementSibling;
       };
     } else {
       _nextSibling = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         do {
           el_node = el_node.nextSibling;
-        } while(el_node && !isElNode(el_node));
+        } while(el_node && !isElementNode(el_node));
       };
       return el_node;
     }
     return _nextSibling;
-  }(Element.prototype);
-
+  }();
   var previousSibling = function() {
     var _previousSibling;
     if ( 'previousElementSibling' in Element.prototype ) {
       _previousSibling = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         return el_node.previousElementSibling;
       };
     } else {
       _previousSibling = function(el_node) {
-        validateElNode(el_node);
+        validateElementNode(el_node);
         do {
           el_node = el_node.previousSibling;
-        } while(el_node && !isElNode(el_node));
+        } while(el_node && !isElementNode(el_node));
         return el_node;
       };
     }
     return _previousSibling;
   }();
+  var parent = function(node, depth) {
+    validateElementNode(node);
+    depth = depth || 1;
+    do { node = node.parentNode; }
+    while(node && --depth);
+    return node;
+  };
+  var hasChild = function(node) {
+    validateElementNode(node);
+    return node.hasChildNodes();
+  }
 
   // ---------------------------------------
   // 반환: FDS 네임스페이스 객체
   return {
+
+    // 라이브러리 정보
     info: {
       version: '0.0.1',
       author: 'yamoo9',
       url: 'https://yamoo9.github.io/FDS',
       license: 'MIT'
     },
+
     // 공개 API
+
     // JavaScript 유틸리티
+    type:          type,
     isNumber:      isNumber,
     isFunction:    isFunction,
     isArray:       isArray,
     isObject:      isObject,
     makeArray:     makeArray,
     validateError: validateError,
+
     // DOM 선택 API: 유틸리티
     id: id,
     tagAll: tagAll,
     tag: tag,
+    classAll: classAll,
+    classSingle: classSingle,
+    selector: query,
+    selectorAll: queryAll,
+
     // DOM 탐색 API: 유틸리티
     first: firstChild,
     last: lastChild,
     prev: previousSibling,
-    next: nextSibling
+    next: nextSibling,
+    parent: parent,
+    hasChild: hasChild
+
   };
 
 }(window);

@@ -11,3 +11,4 @@
 > - [0607](./TIL_MarkDown/TIL_0607.md) | 모듈 패턴, IIFE, Closure
 > - [0612](./TIL_MarkDown/TIL_0612.md) | DOM Script 입문, DOM Property, DOM Information
 > - [0613](./TIL_MarkDown/TIL_0613.md) | DOM Script 실습, 탐색 선택 API 유틸리티 함수
+> - [0614](./TIL_MarkDown/TIL_0614.md) | DOM 생성 및 조작 메서드, 동적 Navigation Indicator 만들기 실습

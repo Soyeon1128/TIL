@@ -14,9 +14,9 @@
 
 > - [????](./TIL_MarkDown/06.md) | 연산자, 데이터 유형 검증, 메서드 빌려쓰기, 생성자와 객체, 프로토타입
 
-> - [흐름 제어와 오류 처리](./TIL_MarkDown/07.md) | , 반복문 if..else, switch, try/catch/throw, 3항 연산자 식
+> - [흐름 제어와 오류 처리](./TIL_MarkDown/07.md) | if...else, switch, try/catch/throw, 3항 연산자 식
 
-> - [반복문](./TIL_MarkDown/08.md) | while, do..while, for, for..in
+> - [반복문](./TIL_MarkDown/08.md) | while, do...while, for, for...in
 
 > - [함수 기초](./TIL_MarkDown/09.md) | 함수 선언, 호이스팅, 함수 호출, 함수 범위
 
@@ -34,6 +34,10 @@
 
 > - [클로저](./TIL_MarkDown/16.md) | 클로저 (Closure)
 
-> - [0612](./TIL_MarkDown/TIL_0612.md) | DOM Script 입문, DOM Property, DOM Information
+> - [생성자 함수와 프로토타입](./TIL_MarkDown/constructor_prototype.md) | 생성자 함수와 프로토타입
+
+> - [DOM Script 입문](./TIL_MarkDown/TIL_0612.md) | DOM Script 입문, DOM Property, DOM Information
+
 > - [0613](./TIL_MarkDown/TIL_0613.md) | DOM Script 실습, 탐색 선택 API 유틸리티 함수
+
 > - [0614](./TIL_MarkDown/TIL_0614.md) | DOM 생성 및 조작 메서드, 동적 Navigation Indicator 만들기 실습

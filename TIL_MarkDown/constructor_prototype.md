@@ -10,6 +10,9 @@ var beagle = new Dog();
 // 공통 속성
 Dog.prototype.jump = true;
 
+poodle.jump = true;
+beagle.jump = true;
+
 // 생성자 함수 Dog의 this에 poodle과 beagle이라는 인스턴스가 들어옴
 // 개별 속성
 function Dog (i, j) {

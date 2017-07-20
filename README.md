@@ -41,3 +41,7 @@
 > - [DOM Script3](./TIL_MarkDown/19_DOM_Script_3.md) | DOM 생성 및 조작 메서드, 동적 Navigation Indicator 만들기 실습
 
 > - [DOM Api](./TIL_MarkDown/20_DOM_Api.md) | DOM Api
+
+> - [jQuery 메소드](./TIL_MarkDown/21_jQuery_methods.md) | jQuery 메소드
+
+> - [Vanilla script vs jQuery library](./TIL_MarkDown/22_Vanilla_jQuery.md) | Vanilla script와 jQuery library 코드 비교

@@ -45,3 +45,5 @@
 > - [jQuery 메소드](./TIL_MarkDown/21_jQuery_methods.md) | jQuery 메소드
 
 > - [Vanilla script vs jQuery library](./TIL_MarkDown/22_Vanilla_jQuery.md) | Vanilla script와 jQuery library 코드 비교
+
+> - [Virtual DOM](./TIL_MarkDown/23_Virtual_DOM.md) | Virtual DOM 제어
